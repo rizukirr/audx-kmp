@@ -686,7 +686,7 @@ git commit -m "feat: bundle per-ABI audx_jni shims in the sample app"
 - Create: `sample-android/src/main/java/dev/rizukirr/audx/sample/VadEngine.kt`
 - Modify: `sample-android/src/main/java/dev/rizukirr/audx/sample/MainActivity.kt`
 
-- [ ] **Step 1: The audio engine**
+- [x] **Step 1: The audio engine**
 
 Create `sample-android/src/main/java/dev/rizukirr/audx/sample/VadEngine.kt` with exactly:
 
@@ -800,7 +800,7 @@ class VadEngine {
 }
 ```
 
-- [ ] **Step 2: The UI**
+- [x] **Step 2: The UI**
 
 Replace the full contents of `sample-android/src/main/java/dev/rizukirr/audx/sample/MainActivity.kt` with:
 
@@ -929,12 +929,12 @@ private fun IndicatorRow(label: String, active: Boolean) {
 }
 ```
 
-- [ ] **Step 3: Build**
+- [x] **Step 3: Build**
 
 Run: `./gradlew :sample-android:assembleDebug`
 Expected: `BUILD SUCCESSFUL`.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add sample-android/src/main/java/
