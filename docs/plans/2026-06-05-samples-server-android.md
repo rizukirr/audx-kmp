@@ -1092,7 +1092,7 @@ git commit -m "feat(samples): app offline denoise pass over audx"
 - Create: `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/Player.kt`
 - Create: `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/Uploader.kt`
 
-- [ ] **Step 1: Write the player**
+- [x] **Step 1: Write the player**
 
 Create `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/Player.kt`:
 
@@ -1122,7 +1122,7 @@ class Player {
 }
 ```
 
-- [ ] **Step 2: Write the uploader**
+- [x] **Step 2: Write the uploader**
 
 Create `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/Uploader.kt`:
 
@@ -1156,12 +1156,12 @@ suspend fun upload(serverUrl: String, wavFile: File): String = withContext(Dispa
 }
 ```
 
-- [ ] **Step 3: Verify it compiles**
+- [x] **Step 3: Verify it compiles**
 
 Run: `cd samples/android-app && ./gradlew :app:assembleDebug`
 Expected: `BUILD SUCCESSFUL`.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add samples/android-app/app/src
