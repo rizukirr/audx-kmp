@@ -2,6 +2,8 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidApplication) apply false
+    alias(libs.plugins.composeCompiler) apply false
     `maven-publish`
 }
 group = "dev.rizukirr"
