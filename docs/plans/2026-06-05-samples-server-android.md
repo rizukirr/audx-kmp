@@ -6,7 +6,7 @@
 
 **Architecture:** Both samples consume `dev.rizukirr:audx-kmp:0.1.0-SNAPSHOT` from `mavenLocal()` (already published — verified: `~/.m2/repository/dev/rizukirr/audx-kmp-jvm/0.1.0-SNAPSHOT/audx-kmp-jvm-0.1.0-SNAPSHOT.jar` is 12.7 MB and bundles the desktop JNI shim). The server is a single Ktor/Netty module with a raw-bytes `POST /denoise` endpoint; the app is a single-activity Compose app with a ViewModel state machine and per-ABI `jniLibs` shims copied from `audx-realtime/libs/`. All audio is 16 kHz mono PCM-16 WAV.
 
-**Tech stack:** Kotlin 2.3.20, Gradle 8.14.3 (both samples), Ktor 3.5.0 (server + client), kotlinx-serialization (via Kotlin plugin 2.3.20), logback-classic 1.5.18, AGP 8.13.2, compileSdk/targetSdk 35, minSdk 26, Compose BOM 2026.05.01, activity-compose 1.13.0, lifecycle-viewmodel-compose 2.10.0. JDK 21 (installed). `ANDROID_HOME=/home/rizki/Android/Sdk` is set (platform `android-35` installed), so no `local.properties` is needed.
+**Tech stack:** Kotlin 2.3.20, Gradle 8.14.3 (both samples), Ktor 3.5.0 (server + client), kotlinx-serialization (via Kotlin plugin 2.3.20), logback-classic 1.5.18, AGP 8.13.2, compileSdk 36 / targetSdk 35, minSdk 26, Compose BOM 2026.05.01, activity-compose 1.13.0, lifecycle-viewmodel-compose 2.10.0. JDK 21 (installed). `ANDROID_HOME=/home/rizki/Android/Sdk` is set (platform `android-35` installed), so no `local.properties` is needed.
 
 **Conventions for all tasks:**
 - All `git` commands run from the repo root `/home/rizki/Projects/audx-kmp`.
@@ -66,12 +66,12 @@ Modified: none (no existing files change).
 - Create: `samples/server/gradle/wrapper/gradle-wrapper.jar` (copy)
 - Create: `samples/server/gradle/wrapper/gradle-wrapper.properties`
 
-- [ ] **Step 1: Confirm the library is in mavenLocal**
+- [x] **Step 1: Confirm the library is in mavenLocal**
 
 Run: `ls ~/.m2/repository/dev/rizukirr/audx-kmp-jvm/0.1.0-SNAPSHOT/audx-kmp-jvm-0.1.0-SNAPSHOT.jar`
 Expected: the file is listed (it exists; ~12.7 MB). If missing, run `./gradlew publishToMavenLocal` from the repo root first.
 
-- [ ] **Step 2: Create directories and copy the Gradle wrapper from the repo root**
+- [x] **Step 2: Create directories and copy the Gradle wrapper from the repo root**
 
 ```bash
 mkdir -p samples/server/gradle/wrapper
@@ -79,7 +79,7 @@ cp gradlew samples/server/gradlew
 cp gradle/wrapper/gradle-wrapper.jar samples/server/gradle/wrapper/gradle-wrapper.jar
 ```
 
-- [ ] **Step 3: Write the wrapper properties (Gradle 8.14.3)**
+- [x] **Step 3: Write the wrapper properties (Gradle 8.14.3)**
 
 Create `samples/server/gradle/wrapper/gradle-wrapper.properties`:
 
@@ -91,7 +91,7 @@ zipStoreBase=GRADLE_USER_HOME
 zipStorePath=wrapper/dists
 ```
 
-- [ ] **Step 4: Write settings.gradle.kts**
+- [x] **Step 4: Write settings.gradle.kts**
 
 Create `samples/server/settings.gradle.kts`:
 
@@ -113,7 +113,7 @@ dependencyResolutionManagement {
 rootProject.name = "audx-server-sample"
 ```
 
-- [ ] **Step 5: Write build.gradle.kts**
+- [x] **Step 5: Write build.gradle.kts**
 
 Create `samples/server/build.gradle.kts`:
 
@@ -149,12 +149,12 @@ dependencies {
 }
 ```
 
-- [ ] **Step 6: Verify the build configures**
+- [x] **Step 6: Verify the build configures**
 
 Run: `cd samples/server && ./gradlew help`
 Expected: `BUILD SUCCESSFUL` (first run downloads the Gradle 8.14.3 distribution).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add samples/server
@@ -169,7 +169,7 @@ git commit -m "feat(samples): scaffold server sample project"
 - Test: `samples/server/src/test/kotlin/dev/rizukirr/audx/samples/server/WavTest.kt`
 - Create: `samples/server/src/main/kotlin/dev/rizukirr/audx/samples/server/Wav.kt`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `samples/server/src/test/kotlin/dev/rizukirr/audx/samples/server/WavTest.kt`:
 
@@ -218,12 +218,12 @@ class WavTest {
 }
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd samples/server && ./gradlew test --tests "dev.rizukirr.audx.samples.server.WavTest"`
 Expected: FAILED — compilation error (unresolved references `parseWav`, `wavBytes`, `writeWav`, `WavFormatException`).
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 Create `samples/server/src/main/kotlin/dev/rizukirr/audx/samples/server/Wav.kt`:
 
@@ -312,12 +312,12 @@ fun writeWav(file: File, sampleRate: Int, samples: ShortArray) {
 }
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `cd samples/server && ./gradlew test --tests "dev.rizukirr.audx.samples.server.WavTest"`
 Expected: `BUILD SUCCESSFUL`, all 4 tests pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add samples/server/src
@@ -334,7 +334,7 @@ This task exercises the real JNI shim on desktop — the same path the library's
 - Test: `samples/server/src/test/kotlin/dev/rizukirr/audx/samples/server/DenoiserTest.kt`
 - Create: `samples/server/src/main/kotlin/dev/rizukirr/audx/samples/server/Denoiser.kt`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `samples/server/src/test/kotlin/dev/rizukirr/audx/samples/server/DenoiserTest.kt`:
 
@@ -365,12 +365,12 @@ class DenoiserTest {
 }
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd samples/server && ./gradlew test --tests "dev.rizukirr.audx.samples.server.DenoiserTest"`
 Expected: FAILED — compilation error (unresolved reference `denoise`).
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 Create `samples/server/src/main/kotlin/dev/rizukirr/audx/samples/server/Denoiser.kt`:
 
@@ -404,12 +404,12 @@ fun denoise(sampleRate: Int, samples: ShortArray): Denoised {
 }
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `cd samples/server && ./gradlew test --tests "dev.rizukirr.audx.samples.server.DenoiserTest"`
 Expected: `BUILD SUCCESSFUL`, both tests pass. (If this fails with `UnsatisfiedLinkError`, the mavenLocal artifact is stale — republish from the repo root with `./gradlew publishToMavenLocal` and retry.)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add samples/server/src
@@ -425,7 +425,7 @@ git commit -m "feat(samples): server offline denoise pass over audx"
 - Create: `samples/server/src/main/kotlin/dev/rizukirr/audx/samples/server/Application.kt`
 - Create: `samples/server/src/main/resources/logback.xml`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `samples/server/src/test/kotlin/dev/rizukirr/audx/samples/server/ApplicationTest.kt`:
 
@@ -478,12 +478,12 @@ class ApplicationTest {
 }
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd samples/server && ./gradlew test --tests "dev.rizukirr.audx.samples.server.ApplicationTest"`
 Expected: FAILED — compilation error (unresolved reference `module`).
 
-- [ ] **Step 3: Write the application module**
+- [x] **Step 3: Write the application module**
 
 Create `samples/server/src/main/kotlin/dev/rizukirr/audx/samples/server/Application.kt`:
 
@@ -547,7 +547,7 @@ fun Application.module(recordingsDir: File = File("recordings")) {
 
 Note: the endpoint accepts any mono PCM-16 sample rate (per the spec's `parseWav` contract — audx resamples internally), not just 16 kHz.
 
-- [ ] **Step 4: Write logback.xml**
+- [x] **Step 4: Write logback.xml**
 
 Create `samples/server/src/main/resources/logback.xml`:
 
@@ -564,12 +564,12 @@ Create `samples/server/src/main/resources/logback.xml`:
 </configuration>
 ```
 
-- [ ] **Step 5: Run the full server test suite**
+- [x] **Step 5: Run the full server test suite**
 
 Run: `cd samples/server && ./gradlew test`
 Expected: `BUILD SUCCESSFUL` — WavTest (4), DenoiserTest (2), ApplicationTest (3) all pass.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add samples/server/src
@@ -583,7 +583,7 @@ git commit -m "feat(samples): server /denoise and /health endpoints"
 **Files:**
 - Create: `samples/server/README.md`
 
-- [ ] **Step 1: Write the README**
+- [x] **Step 1: Write the README**
 
 Create `samples/server/README.md`:
 
@@ -625,7 +625,7 @@ Errors: malformed/unsupported WAV → `400` with a reason; processing or IO
 failures → `500` (logged).
 ````
 
-- [ ] **Step 2: Smoke-test the real server**
+- [x] **Step 2: Smoke-test the real server**
 
 ```bash
 cd samples/server
@@ -638,7 +638,7 @@ kill $SERVER_PID
 
 Expected: `curl` prints `ok`. (If `curl` fails because the server is still compiling, wait and retry the curl before killing.)
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add samples/server/README.md
@@ -660,7 +660,7 @@ git commit -m "docs(samples): server README with run + API docs"
 - Create: `samples/android-app/app/src/main/AndroidManifest.xml`
 - Create: `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/MainActivity.kt` (placeholder; replaced in Task 13)
 
-- [ ] **Step 1: Create directories and copy the Gradle wrapper**
+- [x] **Step 1: Create directories and copy the Gradle wrapper**
 
 ```bash
 mkdir -p samples/android-app/gradle/wrapper
@@ -669,7 +669,7 @@ cp gradlew samples/android-app/gradlew
 cp gradle/wrapper/gradle-wrapper.jar samples/android-app/gradle/wrapper/gradle-wrapper.jar
 ```
 
-- [ ] **Step 2: Write the wrapper properties**
+- [x] **Step 2: Write the wrapper properties**
 
 Create `samples/android-app/gradle/wrapper/gradle-wrapper.properties`:
 
@@ -681,7 +681,7 @@ zipStoreBase=GRADLE_USER_HOME
 zipStorePath=wrapper/dists
 ```
 
-- [ ] **Step 3: Write settings.gradle.kts**
+- [x] **Step 3: Write settings.gradle.kts**
 
 Create `samples/android-app/settings.gradle.kts`:
 
@@ -707,7 +707,7 @@ rootProject.name = "audx-android-sample"
 include(":app")
 ```
 
-- [ ] **Step 4: Write the root build file and gradle.properties**
+- [x] **Step 4: Write the root build file and gradle.properties**
 
 Create `samples/android-app/build.gradle.kts`:
 
@@ -726,7 +726,7 @@ org.gradle.jvmargs=-Xmx4g
 android.useAndroidX=true
 ```
 
-- [ ] **Step 5: Write the app module build file**
+- [x] **Step 5: Write the app module build file**
 
 Create `samples/android-app/app/build.gradle.kts`:
 
@@ -741,7 +741,7 @@ plugins {
 
 android {
     namespace = "dev.rizukirr.audx.samples.app"
-    compileSdk = 35
+    compileSdk = 36 // activity-compose 1.13.0 (and transitives) require >= 36
 
     defaultConfig {
         applicationId = "dev.rizukirr.audx.samples.app"
@@ -785,7 +785,7 @@ dependencies {
 }
 ```
 
-- [ ] **Step 6: Write the manifest**
+- [x] **Step 6: Write the manifest**
 
 Create `samples/android-app/app/src/main/AndroidManifest.xml`:
 
@@ -815,7 +815,7 @@ Create `samples/android-app/app/src/main/AndroidManifest.xml`:
 
 (`usesCleartextTraffic` because the sample server is plain HTTP on the LAN.)
 
-- [ ] **Step 7: Write the placeholder MainActivity**
+- [x] **Step 7: Write the placeholder MainActivity**
 
 Create `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/MainActivity.kt`:
 
@@ -836,12 +836,12 @@ class MainActivity : ComponentActivity() {
 }
 ```
 
-- [ ] **Step 8: Verify the debug build**
+- [x] **Step 8: Verify the debug build**
 
 Run: `cd samples/android-app && ./gradlew :app:assembleDebug`
 Expected: `BUILD SUCCESSFUL` (first run downloads Gradle + Android dependencies; slow once).
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add samples/android-app
@@ -856,7 +856,7 @@ git commit -m "feat(samples): scaffold Android sample app"
 - Create: `samples/android-app/app/src/main/jniLibs/arm64-v8a/libaudx_jni.so` (copy)
 - Create: `samples/android-app/app/src/main/jniLibs/x86_64/libaudx_jni.so` (copy)
 
-- [ ] **Step 1: Copy the per-ABI shims from audx-realtime**
+- [x] **Step 1: Copy the per-ABI shims from audx-realtime**
 
 ```bash
 mkdir -p samples/android-app/app/src/main/jniLibs/arm64-v8a
@@ -867,7 +867,7 @@ cp /home/rizki/Projects/audx-realtime/libs/x86_64/libaudx_jni.so samples/android
 
 (Only `libaudx_jni.so` is needed — verified self-contained: its `NEEDED` entries are only `libm`/`libdl`/`libc`. `libaudx_src.so` is not used.)
 
-- [ ] **Step 2: Rebuild and inspect the APK**
+- [x] **Step 2: Rebuild and inspect the APK**
 
 ```bash
 cd samples/android-app
@@ -877,12 +877,12 @@ unzip -l app/build/outputs/apk/debug/app-debug.apk | grep libaudx_jni.so
 
 Expected: two lines — `lib/arm64-v8a/libaudx_jni.so` and `lib/x86_64/libaudx_jni.so`.
 
-- [ ] **Step 3: Confirm the desktop natives were excluded**
+- [x] **Step 3: Confirm the desktop natives were excluded**
 
 Run: `unzip -l app/build/outputs/apk/debug/app-debug.apk | grep natives/ || echo EXCLUDED`
 Expected: `EXCLUDED` (no `natives/...` java-resource entries from the jvm jar).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add samples/android-app/app/src/main/jniLibs
@@ -898,7 +898,7 @@ The app only writes WAV files (MediaPlayer reads them; the server parses them), 
 **Files:**
 - Create: `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/WavFile.kt`
 
-- [ ] **Step 1: Write the implementation**
+- [x] **Step 1: Write the implementation**
 
 Create `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/WavFile.kt`:
 
@@ -935,12 +935,12 @@ fun writeWav(file: File, sampleRate: Int, samples: ShortArray) {
 }
 ```
 
-- [ ] **Step 2: Verify it compiles**
+- [x] **Step 2: Verify it compiles**
 
 Run: `cd samples/android-app && ./gradlew :app:assembleDebug`
 Expected: `BUILD SUCCESSFUL`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add samples/android-app/app/src
@@ -954,7 +954,7 @@ git commit -m "feat(samples): app WAV encoder"
 **Files:**
 - Create: `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/Recorder.kt`
 
-- [ ] **Step 1: Write the implementation**
+- [x] **Step 1: Write the implementation**
 
 Create `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/Recorder.kt`:
 
@@ -1022,12 +1022,12 @@ class Recorder {
 }
 ```
 
-- [ ] **Step 2: Verify it compiles**
+- [x] **Step 2: Verify it compiles**
 
 Run: `cd samples/android-app && ./gradlew :app:assembleDebug`
 Expected: `BUILD SUCCESSFUL`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add samples/android-app/app/src
@@ -1041,7 +1041,7 @@ git commit -m "feat(samples): app AudioRecord-based recorder"
 **Files:**
 - Create: `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/Denoiser.kt`
 
-- [ ] **Step 1: Write the implementation**
+- [x] **Step 1: Write the implementation**
 
 Create `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/Denoiser.kt`:
 
@@ -1072,12 +1072,12 @@ fun denoise(sampleRate: Int, samples: ShortArray): ShortArray {
 }
 ```
 
-- [ ] **Step 2: Verify it compiles**
+- [x] **Step 2: Verify it compiles**
 
 Run: `cd samples/android-app && ./gradlew :app:assembleDebug`
 Expected: `BUILD SUCCESSFUL`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add samples/android-app/app/src
@@ -1092,7 +1092,7 @@ git commit -m "feat(samples): app offline denoise pass over audx"
 - Create: `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/Player.kt`
 - Create: `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/Uploader.kt`
 
-- [ ] **Step 1: Write the player**
+- [x] **Step 1: Write the player**
 
 Create `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/Player.kt`:
 
@@ -1122,7 +1122,7 @@ class Player {
 }
 ```
 
-- [ ] **Step 2: Write the uploader**
+- [x] **Step 2: Write the uploader**
 
 Create `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/Uploader.kt`:
 
@@ -1156,12 +1156,12 @@ suspend fun upload(serverUrl: String, wavFile: File): String = withContext(Dispa
 }
 ```
 
-- [ ] **Step 3: Verify it compiles**
+- [x] **Step 3: Verify it compiles**
 
 Run: `cd samples/android-app && ./gradlew :app:assembleDebug`
 Expected: `BUILD SUCCESSFUL`.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add samples/android-app/app/src
@@ -1175,7 +1175,7 @@ git commit -m "feat(samples): app WAV playback and raw-audio upload"
 **Files:**
 - Create: `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/MainViewModel.kt`
 
-- [ ] **Step 1: Write the implementation**
+- [x] **Step 1: Write the implementation**
 
 Create `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/MainViewModel.kt`:
 
@@ -1282,12 +1282,12 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 }
 ```
 
-- [ ] **Step 2: Verify it compiles**
+- [x] **Step 2: Verify it compiles**
 
 Run: `cd samples/android-app && ./gradlew :app:assembleDebug`
 Expected: `BUILD SUCCESSFUL`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add samples/android-app/app/src
@@ -1301,7 +1301,7 @@ git commit -m "feat(samples): app ViewModel record/denoise/upload state machine"
 **Files:**
 - Modify: `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/MainActivity.kt` (replace the Task 6 placeholder entirely)
 
-- [ ] **Step 1: Replace MainActivity with the full UI**
+- [x] **Step 1: Replace MainActivity with the full UI**
 
 Replace the entire contents of `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/MainActivity.kt` with:
 
@@ -1396,12 +1396,12 @@ fun MainScreen(vm: MainViewModel = viewModel()) {
 
 (`Context.checkSelfPermission` is API 23+; minSdk is 26, so no compat shim is needed.)
 
-- [ ] **Step 2: Verify it compiles**
+- [x] **Step 2: Verify it compiles**
 
 Run: `cd samples/android-app && ./gradlew :app:assembleDebug`
 Expected: `BUILD SUCCESSFUL`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add samples/android-app/app/src
@@ -1415,7 +1415,7 @@ git commit -m "feat(samples): app Compose UI with record/play/upload flow"
 **Files:**
 - Create: `samples/README.md`
 
-- [ ] **Step 1: Write the README**
+- [x] **Step 1: Write the README**
 
 Create `samples/README.md`:
 
@@ -1471,7 +1471,7 @@ Two standalone projects demonstrating `dev.rizukirr:audx-kmp:0.1.0-SNAPSHOT`:
    The server saves its own denoised copy under `server/recordings/`.
 ````
 
-- [ ] **Step 2: Run the final build sweep**
+- [x] **Step 2: Run the final build sweep**
 
 ```bash
 cd samples/server && ./gradlew test
@@ -1480,7 +1480,7 @@ cd ../android-app && ./gradlew :app:assembleDebug
 
 Expected: both print `BUILD SUCCESSFUL`; all 9 server tests pass.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add samples/README.md
