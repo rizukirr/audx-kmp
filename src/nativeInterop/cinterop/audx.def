@@ -1,0 +1,10 @@
+headers = audx.h
+headerFilter = audx.h
+package = dev.rizukirr.audx.cinterop
+
+staticLibraries = libaudx.a
+
+libraryPaths.linuxx64 = native/libs/linux_x64
+
+linkerOpts.linux_x64 = -lm -lpthread
+linkerOpts.mingw_x64 = -lm
