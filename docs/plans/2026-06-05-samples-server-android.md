@@ -1041,7 +1041,7 @@ git commit -m "feat(samples): app AudioRecord-based recorder"
 **Files:**
 - Create: `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/Denoiser.kt`
 
-- [ ] **Step 1: Write the implementation**
+- [x] **Step 1: Write the implementation**
 
 Create `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/Denoiser.kt`:
 
@@ -1072,12 +1072,12 @@ fun denoise(sampleRate: Int, samples: ShortArray): ShortArray {
 }
 ```
 
-- [ ] **Step 2: Verify it compiles**
+- [x] **Step 2: Verify it compiles**
 
 Run: `cd samples/android-app && ./gradlew :app:assembleDebug`
 Expected: `BUILD SUCCESSFUL`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add samples/android-app/app/src
