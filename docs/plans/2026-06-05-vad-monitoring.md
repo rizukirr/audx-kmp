@@ -455,7 +455,7 @@ git commit -m "docs: document lastVad and isSpeaking VAD API"
 - Create: `sample-android/src/main/AndroidManifest.xml`
 - Create: `sample-android/src/main/java/dev/rizukirr/audx/sample/MainActivity.kt`
 
-- [ ] **Step 1: Repositories and module include**
+- [x] **Step 1: Repositories and module include**
 
 Replace the full contents of `settings.gradle.kts` with:
 
@@ -486,7 +486,7 @@ rootProject.name = "audx-kmp"
 include(":sample-android")
 ```
 
-- [ ] **Step 2: Version catalog entries**
+- [x] **Step 2: Version catalog entries**
 
 Replace the full contents of `gradle/libs.versions.toml` with:
 
@@ -513,7 +513,7 @@ androidApplication = { id = "com.android.application", version.ref = "agp" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ```
 
-- [ ] **Step 3: Root plugin declarations**
+- [x] **Step 3: Root plugin declarations**
 
 In `build.gradle.kts`, replace the `plugins { ... }` block with:
 
@@ -526,7 +526,7 @@ plugins {
 }
 ```
 
-- [ ] **Step 4: Sample module build file**
+- [x] **Step 4: Sample module build file**
 
 Create `sample-android/build.gradle.kts` with exactly (AGP 9 idioms — built-in Kotlin, no `kotlin-android` plugin — mirrored from the proven audx-android sample):
 
@@ -579,7 +579,7 @@ dependencies {
 }
 ```
 
-- [ ] **Step 5: Manifest**
+- [x] **Step 5: Manifest**
 
 Create `sample-android/src/main/AndroidManifest.xml` with exactly:
 
@@ -604,7 +604,7 @@ Create `sample-android/src/main/AndroidManifest.xml` with exactly:
 </manifest>
 ```
 
-- [ ] **Step 6: Skeleton activity (replaced in Task 7)**
+- [x] **Step 6: Skeleton activity (replaced in Task 7)**
 
 Create `sample-android/src/main/java/dev/rizukirr/audx/sample/MainActivity.kt` with exactly:
 
@@ -629,12 +629,12 @@ class MainActivity : ComponentActivity() {
 }
 ```
 
-- [ ] **Step 7: Build the module**
+- [x] **Step 7: Build the module**
 
 Run: `./gradlew :sample-android:assembleDebug`
 Expected: `BUILD SUCCESSFUL`. Also re-run `./gradlew jvmTest` once — expected `BUILD SUCCESSFUL` — to prove the library module is unaffected by the AGP addition.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add settings.gradle.kts gradle/libs.versions.toml build.gradle.kts sample-android/
