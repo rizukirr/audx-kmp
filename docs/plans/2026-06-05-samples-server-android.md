@@ -583,7 +583,7 @@ git commit -m "feat(samples): server /denoise and /health endpoints"
 **Files:**
 - Create: `samples/server/README.md`
 
-- [ ] **Step 1: Write the README**
+- [x] **Step 1: Write the README**
 
 Create `samples/server/README.md`:
 
@@ -625,7 +625,7 @@ Errors: malformed/unsupported WAV → `400` with a reason; processing or IO
 failures → `500` (logged).
 ````
 
-- [ ] **Step 2: Smoke-test the real server**
+- [x] **Step 2: Smoke-test the real server**
 
 ```bash
 cd samples/server
@@ -638,7 +638,7 @@ kill $SERVER_PID
 
 Expected: `curl` prints `ok`. (If `curl` fails because the server is still compiling, wait and retry the curl before killing.)
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add samples/server/README.md
