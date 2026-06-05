@@ -72,7 +72,9 @@ samples/
 
 - `POST /denoise` — body: `audio/wav` bytes (16 kHz, mono, PCM-16). Server
   parses the WAV header, denoises the PCM, writes
-  `recordings/denoised-yyyyMMdd-HHmmss.wav`, responds `200` with JSON
+  `recordings/denoised-yyyyMMdd-HHmmss-SSS.wav` (milliseconds appended to
+  avoid collisions on concurrent uploads; accepted by user during
+  verification), responds `200` with JSON
   `{"savedAs": "<filename>", "frames": N}`.
 - `GET /health` — returns `ok`, used by the phone to check connectivity.
 - Raw bytes (not multipart) to keep both sides minimal.
