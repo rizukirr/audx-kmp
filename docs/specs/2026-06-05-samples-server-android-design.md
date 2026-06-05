@@ -1,7 +1,7 @@
 ---
 title: samples — Ktor denoise server + Android recorder app
 date: 2026-06-05
-status: draft
+status: approved
 ---
 
 # samples — Ktor denoise server + Android recorder app — Design
