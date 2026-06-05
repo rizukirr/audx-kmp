@@ -334,7 +334,7 @@ This task exercises the real JNI shim on desktop — the same path the library's
 - Test: `samples/server/src/test/kotlin/dev/rizukirr/audx/samples/server/DenoiserTest.kt`
 - Create: `samples/server/src/main/kotlin/dev/rizukirr/audx/samples/server/Denoiser.kt`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `samples/server/src/test/kotlin/dev/rizukirr/audx/samples/server/DenoiserTest.kt`:
 
@@ -365,12 +365,12 @@ class DenoiserTest {
 }
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd samples/server && ./gradlew test --tests "dev.rizukirr.audx.samples.server.DenoiserTest"`
 Expected: FAILED — compilation error (unresolved reference `denoise`).
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 Create `samples/server/src/main/kotlin/dev/rizukirr/audx/samples/server/Denoiser.kt`:
 
@@ -404,12 +404,12 @@ fun denoise(sampleRate: Int, samples: ShortArray): Denoised {
 }
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `cd samples/server && ./gradlew test --tests "dev.rizukirr.audx.samples.server.DenoiserTest"`
 Expected: `BUILD SUCCESSFUL`, both tests pass. (If this fails with `UnsatisfiedLinkError`, the mavenLocal artifact is stale — republish from the repo root with `./gradlew publishToMavenLocal` and retry.)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add samples/server/src
