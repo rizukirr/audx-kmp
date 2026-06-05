@@ -5,3 +5,5 @@ build/
 local.properties
 .no-vibe/
 .vibe-worktrees/
+/samples/server/recordings
+docs/
