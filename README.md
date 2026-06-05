@@ -79,6 +79,22 @@ Audx(sampleRate = 16000).use { audx ->
 }
 ```
 
+### Voice activity detection
+
+Every `process()` call returns the frame's speech probability and records it.
+Two accessors expose it:
+
+```kotlin
+audx.lastVad                  // raw probability of the newest frame (UI meters)
+audx.isSpeaking()             // debounced: threshold 0.5, 200ms hangover
+audx.isSpeaking(0.7f, 400)    // stricter threshold, longer hold
+audx.isSpeaking(hangoverMs = 0) // raw last-frame comparison, no debounce
+```
+
+`isSpeaking` is true if any frame within the last `hangoverMs` of processed
+audio exceeded the threshold — onset is instant, release waits out short dips
+(breaths, gaps between words), so the state doesn't flicker mid-sentence.
+
 ## Verify
 
 ```bash
