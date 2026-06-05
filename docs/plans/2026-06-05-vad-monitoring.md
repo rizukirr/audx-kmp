@@ -43,7 +43,7 @@ Modified:
 - Modify: `gradle/wrapper/gradle-wrapper.properties`
 - Modify: `gradle/libs.versions.toml`
 
-- [ ] **Step 1: Point the wrapper at Gradle 9.4.1**
+- [x] **Step 1: Point the wrapper at Gradle 9.4.1**
 
 In `gradle/wrapper/gradle-wrapper.properties` replace the `distributionUrl` line:
 
@@ -51,7 +51,7 @@ In `gradle/wrapper/gradle-wrapper.properties` replace the `distributionUrl` line
 distributionUrl=https\://services.gradle.org/distributions/gradle-9.4.1-bin.zip
 ```
 
-- [ ] **Step 2: Bump Kotlin in the version catalog**
+- [x] **Step 2: Bump Kotlin in the version catalog**
 
 In `gradle/libs.versions.toml` change the kotlin version line to:
 
@@ -59,17 +59,17 @@ In `gradle/libs.versions.toml` change the kotlin version line to:
 kotlin = "2.3.21"
 ```
 
-- [ ] **Step 3: Confirm the wrapper resolves**
+- [x] **Step 3: Confirm the wrapper resolves**
 
 Run: `./gradlew --version`
 Expected: output contains `Gradle 9.4.1` (the distribution is already in `~/.gradle/wrapper/dists` from the audx-android project, so no long download).
 
-- [ ] **Step 4: Confirm the library is still green**
+- [x] **Step 4: Confirm the library is still green**
 
 Run: `./gradlew jvmTest compileKotlinLinuxX64 compileKotlinMingwX64 compileKotlinAndroidNativeArm64 compileKotlinAndroidNativeX64`
 Expected: `BUILD SUCCESSFUL`. If Gradle 9 surfaces new deprecation *warnings*, ignore them; only failures block.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add gradle/wrapper/gradle-wrapper.properties gradle/libs.versions.toml
