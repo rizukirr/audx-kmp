@@ -50,6 +50,16 @@ app/src/main/jniLibs/arm64-v8a/libaudx_jni.so
 app/src/main/jniLibs/x86_64/libaudx_jni.so
 ```
 
+A working example lives in this repo: [`sample-android/`](sample-android/) records
+from the microphone and shows `lastVad` plus the raw vs debounced `isSpeaking()`
+indicators side by side. Its `src/main/jniLibs/<abi>/` shims are committed copies
+of `audx-realtime/libs/<abi>/libaudx_jni.so` — refresh them the same way after
+rebuilding (`./scripts/android.sh release` in audx-realtime, then re-copy).
+
+```bash
+./gradlew :sample-android:assembleDebug   # build the demo APK
+```
+
 ### JNI surface
 
 The contract between `src/jvmMain/kotlin/Audx.kt` and `audx-realtime/src/audx_jni.c`:
