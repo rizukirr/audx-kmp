@@ -1301,7 +1301,7 @@ git commit -m "feat(samples): app ViewModel record/denoise/upload state machine"
 **Files:**
 - Modify: `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/MainActivity.kt` (replace the Task 6 placeholder entirely)
 
-- [ ] **Step 1: Replace MainActivity with the full UI**
+- [x] **Step 1: Replace MainActivity with the full UI**
 
 Replace the entire contents of `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/MainActivity.kt` with:
 
@@ -1396,12 +1396,12 @@ fun MainScreen(vm: MainViewModel = viewModel()) {
 
 (`Context.checkSelfPermission` is API 23+; minSdk is 26, so no compat shim is needed.)
 
-- [ ] **Step 2: Verify it compiles**
+- [x] **Step 2: Verify it compiles**
 
 Run: `cd samples/android-app && ./gradlew :app:assembleDebug`
 Expected: `BUILD SUCCESSFUL`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add samples/android-app/app/src
