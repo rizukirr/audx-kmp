@@ -660,7 +660,7 @@ git commit -m "docs(samples): server README with run + API docs"
 - Create: `samples/android-app/app/src/main/AndroidManifest.xml`
 - Create: `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/MainActivity.kt` (placeholder; replaced in Task 13)
 
-- [ ] **Step 1: Create directories and copy the Gradle wrapper**
+- [x] **Step 1: Create directories and copy the Gradle wrapper**
 
 ```bash
 mkdir -p samples/android-app/gradle/wrapper
@@ -669,7 +669,7 @@ cp gradlew samples/android-app/gradlew
 cp gradle/wrapper/gradle-wrapper.jar samples/android-app/gradle/wrapper/gradle-wrapper.jar
 ```
 
-- [ ] **Step 2: Write the wrapper properties**
+- [x] **Step 2: Write the wrapper properties**
 
 Create `samples/android-app/gradle/wrapper/gradle-wrapper.properties`:
 
@@ -681,7 +681,7 @@ zipStoreBase=GRADLE_USER_HOME
 zipStorePath=wrapper/dists
 ```
 
-- [ ] **Step 3: Write settings.gradle.kts**
+- [x] **Step 3: Write settings.gradle.kts**
 
 Create `samples/android-app/settings.gradle.kts`:
 
@@ -707,7 +707,7 @@ rootProject.name = "audx-android-sample"
 include(":app")
 ```
 
-- [ ] **Step 4: Write the root build file and gradle.properties**
+- [x] **Step 4: Write the root build file and gradle.properties**
 
 Create `samples/android-app/build.gradle.kts`:
 
@@ -726,7 +726,7 @@ org.gradle.jvmargs=-Xmx4g
 android.useAndroidX=true
 ```
 
-- [ ] **Step 5: Write the app module build file**
+- [x] **Step 5: Write the app module build file**
 
 Create `samples/android-app/app/build.gradle.kts`:
 
@@ -785,7 +785,7 @@ dependencies {
 }
 ```
 
-- [ ] **Step 6: Write the manifest**
+- [x] **Step 6: Write the manifest**
 
 Create `samples/android-app/app/src/main/AndroidManifest.xml`:
 
@@ -815,7 +815,7 @@ Create `samples/android-app/app/src/main/AndroidManifest.xml`:
 
 (`usesCleartextTraffic` because the sample server is plain HTTP on the LAN.)
 
-- [ ] **Step 7: Write the placeholder MainActivity**
+- [x] **Step 7: Write the placeholder MainActivity**
 
 Create `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/MainActivity.kt`:
 
@@ -836,12 +836,12 @@ class MainActivity : ComponentActivity() {
 }
 ```
 
-- [ ] **Step 8: Verify the debug build**
+- [x] **Step 8: Verify the debug build**
 
 Run: `cd samples/android-app && ./gradlew :app:assembleDebug`
 Expected: `BUILD SUCCESSFUL` (first run downloads Gradle + Android dependencies; slow once).
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add samples/android-app
