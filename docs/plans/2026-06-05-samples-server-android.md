@@ -1415,7 +1415,7 @@ git commit -m "feat(samples): app Compose UI with record/play/upload flow"
 **Files:**
 - Create: `samples/README.md`
 
-- [ ] **Step 1: Write the README**
+- [x] **Step 1: Write the README**
 
 Create `samples/README.md`:
 
@@ -1471,7 +1471,7 @@ Two standalone projects demonstrating `dev.rizukirr:audx-kmp:0.1.0-SNAPSHOT`:
    The server saves its own denoised copy under `server/recordings/`.
 ````
 
-- [ ] **Step 2: Run the final build sweep**
+- [x] **Step 2: Run the final build sweep**
 
 ```bash
 cd samples/server && ./gradlew test
@@ -1480,7 +1480,7 @@ cd ../android-app && ./gradlew :app:assembleDebug
 
 Expected: both print `BUILD SUCCESSFUL`; all 9 server tests pass.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add samples/README.md
