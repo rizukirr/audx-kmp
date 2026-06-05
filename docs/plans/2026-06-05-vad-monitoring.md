@@ -84,7 +84,7 @@ git commit -m "build: bump to Gradle 9.4.1 and Kotlin 2.3.21"
 - Create: `src/jvmTest/kotlin/VadRingTest.kt`
 - Create: `src/commonMain/kotlin/VadRing.kt`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `src/jvmTest/kotlin/VadRingTest.kt` with exactly:
 
@@ -150,12 +150,12 @@ class VadRingTest {
 }
 ```
 
-- [ ] **Step 2: Run to confirm failure**
+- [x] **Step 2: Run to confirm failure**
 
 Run: `./gradlew jvmTest --tests "dev.rizukirr.audx.VadRingTest"`
 Expected: FAIL — compilation error, unresolved reference `VadRing`.
 
-- [ ] **Step 3: Implement VadRing**
+- [x] **Step 3: Implement VadRing**
 
 Create `src/commonMain/kotlin/VadRing.kt` with exactly:
 
@@ -203,12 +203,12 @@ internal class VadRing(private val capacity: Int = DEFAULT_CAPACITY) {
 }
 ```
 
-- [ ] **Step 4: Run to confirm pass**
+- [x] **Step 4: Run to confirm pass**
 
 Run: `./gradlew jvmTest --tests "dev.rizukirr.audx.VadRingTest"`
 Expected: PASS (6 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/commonMain/kotlin/VadRing.kt src/jvmTest/kotlin/VadRingTest.kt
