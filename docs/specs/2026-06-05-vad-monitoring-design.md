@@ -1,7 +1,7 @@
 ---
 title: VAD monitoring API (isSpeaking)
 date: 2026-06-05
-status: draft
+status: approved
 ---
 
 # VAD monitoring API (isSpeaking) — Design
