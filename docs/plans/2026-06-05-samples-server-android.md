@@ -66,12 +66,12 @@ Modified: none (no existing files change).
 - Create: `samples/server/gradle/wrapper/gradle-wrapper.jar` (copy)
 - Create: `samples/server/gradle/wrapper/gradle-wrapper.properties`
 
-- [ ] **Step 1: Confirm the library is in mavenLocal**
+- [x] **Step 1: Confirm the library is in mavenLocal**
 
 Run: `ls ~/.m2/repository/dev/rizukirr/audx-kmp-jvm/0.1.0-SNAPSHOT/audx-kmp-jvm-0.1.0-SNAPSHOT.jar`
 Expected: the file is listed (it exists; ~12.7 MB). If missing, run `./gradlew publishToMavenLocal` from the repo root first.
 
-- [ ] **Step 2: Create directories and copy the Gradle wrapper from the repo root**
+- [x] **Step 2: Create directories and copy the Gradle wrapper from the repo root**
 
 ```bash
 mkdir -p samples/server/gradle/wrapper
@@ -79,7 +79,7 @@ cp gradlew samples/server/gradlew
 cp gradle/wrapper/gradle-wrapper.jar samples/server/gradle/wrapper/gradle-wrapper.jar
 ```
 
-- [ ] **Step 3: Write the wrapper properties (Gradle 8.14.3)**
+- [x] **Step 3: Write the wrapper properties (Gradle 8.14.3)**
 
 Create `samples/server/gradle/wrapper/gradle-wrapper.properties`:
 
@@ -91,7 +91,7 @@ zipStoreBase=GRADLE_USER_HOME
 zipStorePath=wrapper/dists
 ```
 
-- [ ] **Step 4: Write settings.gradle.kts**
+- [x] **Step 4: Write settings.gradle.kts**
 
 Create `samples/server/settings.gradle.kts`:
 
@@ -113,7 +113,7 @@ dependencyResolutionManagement {
 rootProject.name = "audx-server-sample"
 ```
 
-- [ ] **Step 5: Write build.gradle.kts**
+- [x] **Step 5: Write build.gradle.kts**
 
 Create `samples/server/build.gradle.kts`:
 
@@ -149,12 +149,12 @@ dependencies {
 }
 ```
 
-- [ ] **Step 6: Verify the build configures**
+- [x] **Step 6: Verify the build configures**
 
 Run: `cd samples/server && ./gradlew help`
 Expected: `BUILD SUCCESSFUL` (first run downloads the Gradle 8.14.3 distribution).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add samples/server
