@@ -6,7 +6,7 @@
 
 **Architecture:** Both samples consume `dev.rizukirr:audx-kmp:0.1.0-SNAPSHOT` from `mavenLocal()` (already published — verified: `~/.m2/repository/dev/rizukirr/audx-kmp-jvm/0.1.0-SNAPSHOT/audx-kmp-jvm-0.1.0-SNAPSHOT.jar` is 12.7 MB and bundles the desktop JNI shim). The server is a single Ktor/Netty module with a raw-bytes `POST /denoise` endpoint; the app is a single-activity Compose app with a ViewModel state machine and per-ABI `jniLibs` shims copied from `audx-realtime/libs/`. All audio is 16 kHz mono PCM-16 WAV.
 
-**Tech stack:** Kotlin 2.3.20, Gradle 8.14.3 (both samples), Ktor 3.5.0 (server + client), kotlinx-serialization (via Kotlin plugin 2.3.20), logback-classic 1.5.18, AGP 8.13.2, compileSdk/targetSdk 35, minSdk 26, Compose BOM 2026.05.01, activity-compose 1.13.0, lifecycle-viewmodel-compose 2.10.0. JDK 21 (installed). `ANDROID_HOME=/home/rizki/Android/Sdk` is set (platform `android-35` installed), so no `local.properties` is needed.
+**Tech stack:** Kotlin 2.3.20, Gradle 8.14.3 (both samples), Ktor 3.5.0 (server + client), kotlinx-serialization (via Kotlin plugin 2.3.20), logback-classic 1.5.18, AGP 8.13.2, compileSdk 36 / targetSdk 35, minSdk 26, Compose BOM 2026.05.01, activity-compose 1.13.0, lifecycle-viewmodel-compose 2.10.0. JDK 21 (installed). `ANDROID_HOME=/home/rizki/Android/Sdk` is set (platform `android-35` installed), so no `local.properties` is needed.
 
 **Conventions for all tasks:**
 - All `git` commands run from the repo root `/home/rizki/Projects/audx-kmp`.
@@ -741,7 +741,7 @@ plugins {
 
 android {
     namespace = "dev.rizukirr.audx.samples.app"
-    compileSdk = 35
+    compileSdk = 36 // activity-compose 1.13.0 (and transitives) require >= 36
 
     defaultConfig {
         applicationId = "dev.rizukirr.audx.samples.app"
