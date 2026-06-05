@@ -18,10 +18,7 @@ actual class Audx actual constructor(
 ) : AutoCloseable {
 
     init {
-        require(sampleRate > 0) { "sampleRate must be positive (got $sampleRate)" }
-        require(resampleQuality in QUALITY_MIN..QUALITY_MAX) {
-            "resampleQuality must be in $QUALITY_MIN..$QUALITY_MAX (got $resampleQuality)"
-        }
+        validateCreateArgs(sampleRate, resampleQuality)
     }
 
     private val state: CPointer<AudxState> =
@@ -34,21 +31,15 @@ actual class Audx actual constructor(
     private val closed = AtomicInt(0)
 
     actual fun process(input: ShortArray, output: ShortArray): Float {
+        validateFrame(frameSize, input, output)
         check(closed.value == 0) { "Audx is closed" }
-        require(input.size == frameSize) {
-            "input must be $frameSize samples (got ${input.size})"
-        }
-        require(output.size == frameSize) {
-            "output must be $frameSize samples (got ${output.size})"
-        }
 
         val vad = input.usePinned { pinnedIn ->
             output.usePinned { pinnedOut ->
                 audx_process_int(state, pinnedIn.addressOf(0), pinnedOut.addressOf(0))
             }
         }
-        check(vad >= 0f) { "audx_process_int failed (returned $vad)" }
-        return vad
+        return checkVadResult(vad)
     }
 
     actual fun isClosed(): Boolean = closed.value != 0

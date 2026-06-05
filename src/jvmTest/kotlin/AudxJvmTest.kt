@@ -53,10 +53,10 @@ class AudxJvmTest {
 
     @Test
     fun frameSizeMatchesSampleRate() {
-        Audx(sampleRate = 48000).use { a48 ->
+        Audx(sampleRate = FRAME_RATE).use { a48 ->
             Audx(sampleRate = 16000).use { a16 ->
                 assertEquals(
-                    a48.frameSize / 3,
+                    a48.frameSize / (FRAME_RATE / 16000),
                     a16.frameSize,
                     "frame size should scale linearly with sample rate",
                 )

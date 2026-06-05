@@ -1,6 +1,10 @@
 package dev.rizukirr.audx
 
 import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
+import java.security.MessageDigest
 
 actual class Audx actual constructor(
     actual val sampleRate: Int,
@@ -8,10 +12,7 @@ actual class Audx actual constructor(
 ) : AutoCloseable {
 
     init {
-        require(sampleRate > 0) { "sampleRate must be positive (got $sampleRate)" }
-        require(resampleQuality in QUALITY_MIN..QUALITY_MAX) {
-            "resampleQuality must be in $QUALITY_MIN..$QUALITY_MAX (got $resampleQuality)"
-        }
+        validateCreateArgs(sampleRate, resampleQuality)
     }
 
     /** Guards handle lifecycle: process()/close() racing would use-after-free the C state. */
@@ -26,18 +27,10 @@ actual class Audx actual constructor(
     private var closed: Boolean = false
 
     actual fun process(input: ShortArray, output: ShortArray): Float {
-        require(input.size == frameSize) {
-            "input must be $frameSize samples (got ${input.size})"
-        }
-        require(output.size == frameSize) {
-            "output must be $frameSize samples (got ${output.size})"
-        }
-
+        validateFrame(frameSize, input, output)
         synchronized(lock) {
             check(!closed) { "Audx is closed" }
-            val vad = nativeProcess(handle, input, output)
-            check(vad >= 0f) { "audx_process_int failed (returned $vad)" }
-            return vad
+            return checkVadResult(nativeProcess(handle, input, output))
         }
     }
 
@@ -65,6 +58,10 @@ actual class Audx actual constructor(
          * lockstep with this class, so it can never be missing a symbol. Only
          * platforms we don't bundle for (e.g. Android, where the app supplies
          * jniLibs/<abi>/libaudx_jni.so) fall back to System.loadLibrary.
+         *
+         * The resource is extracted once to a per-user cache keyed by content
+         * hash; subsequent JVM starts reuse the cached file instead of paying
+         * the ~14MB copy again.
          */
         private fun loadNativeLibrary() {
             val fileName = libFileName()
@@ -76,19 +73,40 @@ actual class Audx actual constructor(
                 return
             }
 
-            val suffix = "." + fileName.substringAfterLast('.')
-            val tmp = Files.createTempFile("audx_jni", suffix)
-            try {
-                stream.use {
-                    Files.copy(it, tmp, java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+            val bytes = stream.use { it.readBytes() }
+            val hash = MessageDigest.getInstance("SHA-256").digest(bytes)
+                .joinToString("") { "%02x".format(it) }
+                .take(16)
+            val suffix = fileName.substringAfterLast('.')
+
+            val cached = cacheDir().resolve("audx_jni-$hash.$suffix")
+            if (!Files.exists(cached) || Files.size(cached) != bytes.size.toLong()) {
+                val tmp = Files.createTempFile(cached.parent, "audx_jni", ".tmp")
+                try {
+                    Files.write(tmp, bytes)
+                    Files.move(
+                        tmp, cached,
+                        StandardCopyOption.REPLACE_EXISTING,
+                        StandardCopyOption.ATOMIC_MOVE,
+                    )
+                } catch (e: Throwable) {
+                    Files.deleteIfExists(tmp)
+                    throw e
                 }
-                @Suppress("UnsafeDynamicallyLoadedCode")
-                System.load(tmp.toAbsolutePath().toString())
-                tmp.toFile().deleteOnExit()
-            } catch (e: Throwable) {
-                Files.deleteIfExists(tmp)
-                throw e
             }
+
+            @Suppress("UnsafeDynamicallyLoadedCode")
+            System.load(cached.toAbsolutePath().toString())
+        }
+
+        private fun cacheDir(): Path {
+            val home = System.getProperty("user.home")
+            val dir = if (home.isNullOrBlank()) {
+                Paths.get(System.getProperty("java.io.tmpdir"), "audx-kmp")
+            } else {
+                Paths.get(home, ".cache", "audx-kmp")
+            }
+            return Files.createDirectories(dir)
         }
 
         private fun platformId(): String {

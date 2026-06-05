@@ -33,9 +33,10 @@ strip ../audx-kmp/src/jvmMain/resources/natives/linux-x64/libaudx_jni.so
 
 `Audx` (jvm) resolves the native library in order:
 
-1. The bundled resource `natives/<os>-<arch>/` (extracted to a temp file and
-   `System.load`ed). Preferred because it is built in lockstep with the Kotlin
-   facade — a stale shim on `java.library.path` can never shadow it.
+1. The bundled resource `natives/<os>-<arch>/`, extracted once to a per-user
+   cache (`~/.cache/audx-kmp/audx_jni-<hash>.so`, keyed by content hash) and
+   reused across JVM starts. Preferred because it is built in lockstep with the
+   Kotlin facade — a stale shim on `java.library.path` can never shadow it.
 2. Platforms with no bundled native (e.g. Android): `System.loadLibrary("audx_jni")`,
    which honors `-Djava.library.path` and Android's `jniLibs/<abi>/`.
 
