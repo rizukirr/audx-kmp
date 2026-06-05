@@ -100,12 +100,14 @@ fun MainScreen(vm: MainViewModel = viewModel()) {
             }
         }
 
+        // Playback is disabled while recording (state is not Ready then);
+        // each button toggles between Play and Stop for its own track.
         val ready = vm.state is UiState.Ready
-        Button(onClick = vm::playRaw, enabled = ready, modifier = Modifier.fillMaxWidth()) {
-            Text("Play Raw")
+        Button(onClick = vm::togglePlayRaw, enabled = ready, modifier = Modifier.fillMaxWidth()) {
+            Text(if (vm.playing == Track.RAW) "Stop Raw" else "Play Raw")
         }
-        Button(onClick = vm::playDenoised, enabled = ready, modifier = Modifier.fillMaxWidth()) {
-            Text("Play Denoised")
+        Button(onClick = vm::togglePlayDenoised, enabled = ready, modifier = Modifier.fillMaxWidth()) {
+            Text(if (vm.playing == Track.DENOISED) "Stop Denoised" else "Play Denoised")
         }
         Button(onClick = vm::uploadRaw, enabled = ready, modifier = Modifier.fillMaxWidth()) {
             Text("Upload Raw to Server")

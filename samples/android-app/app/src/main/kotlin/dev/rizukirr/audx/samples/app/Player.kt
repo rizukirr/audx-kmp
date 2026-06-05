@@ -7,10 +7,18 @@ import java.io.File
 class Player {
     private var player: MediaPlayer? = null
 
-    fun play(file: File) {
+    /**
+     * Starts [file]. [onComplete] fires once when playback reaches the end
+     * naturally (not when [stop] interrupts it).
+     */
+    fun play(file: File, onComplete: () -> Unit = {}) {
         stop()
         player = MediaPlayer().apply {
             setDataSource(file.absolutePath)
+            setOnCompletionListener {
+                this@Player.stop()
+                onComplete()
+            }
             prepare()
             start()
         }

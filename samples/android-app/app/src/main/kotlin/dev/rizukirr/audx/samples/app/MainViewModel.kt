@@ -21,6 +21,9 @@ sealed interface UiState {
     data class Ready(val rawFile: File, val denoisedFile: File) : UiState
 }
 
+/** Which recording is currently playing back, if any. */
+enum class Track { RAW, DENOISED }
+
 class MainViewModel(app: Application) : AndroidViewModel(app) {
     var state by mutableStateOf<UiState>(UiState.Idle)
         private set
@@ -36,6 +39,10 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     var speaking by mutableStateOf(false)
         private set
 
+    /** Non-null while a recording is playing back; drives the Play/Stop toggle. */
+    var playing by mutableStateOf<Track?>(null)
+        private set
+
     private val recorder = Recorder()
     private val player = Player()
 
@@ -46,6 +53,9 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     fun startRecording() {
         if (state == UiState.Recording) return
+        // Recording takes over the audio path: kill any active playback first.
+        player.stop()
+        playing = null
         state = UiState.Recording
         status = "Recording…"
         viewModelScope.launch(Dispatchers.IO) {
@@ -112,19 +122,32 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         status = "Microphone permission denied"
     }
 
-    fun playRaw() {
-        (state as? UiState.Ready)?.let { play(it.rawFile) }
-    }
+    fun togglePlayRaw() = togglePlay(Track.RAW) { it.rawFile }
 
-    fun playDenoised() {
-        (state as? UiState.Ready)?.let { play(it.denoisedFile) }
-    }
+    fun togglePlayDenoised() = togglePlay(Track.DENOISED) { it.denoisedFile }
 
-    private fun play(file: File) {
+    /**
+     * First tap plays [track]; tapping the same track again stops it. Starting
+     * one track while the other plays switches over (Player stops the previous).
+     */
+    private fun togglePlay(track: Track, fileOf: (UiState.Ready) -> File) {
+        val ready = state as? UiState.Ready ?: return
+        if (playing == track) {
+            player.stop()
+            playing = null
+            status = "Stopped"
+            return
+        }
+        val file = fileOf(ready)
         status = try {
-            player.play(file)
+            player.play(file) {
+                playing = null
+                status = "Finished ${file.name}"
+            }
+            playing = track
             "Playing ${file.name}"
         } catch (t: Throwable) {
+            playing = null
             "Playback failed: ${t.message}"
         }
     }
@@ -141,5 +164,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    override fun onCleared() = player.stop()
+    override fun onCleared() {
+        playing = null
+        player.stop()
+    }
 }
