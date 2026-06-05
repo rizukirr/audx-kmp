@@ -33,8 +33,11 @@ strip ../audx-kmp/src/jvmMain/resources/natives/linux-x64/libaudx_jni.so
 
 `Audx` (jvm) resolves the native library in order:
 
-1. `System.loadLibrary("audx_jni")` — honors `-Djava.library.path`, and on Android picks up `jniLibs/<abi>/libaudx_jni.so` automatically.
-2. Fallback: extract the bundled resource `natives/<os>-<arch>/` to a temp file and `System.load` it (zero-config for desktop/server JVMs on platforms we bundle).
+1. The bundled resource `natives/<os>-<arch>/` (extracted to a temp file and
+   `System.load`ed). Preferred because it is built in lockstep with the Kotlin
+   facade — a stale shim on `java.library.path` can never shadow it.
+2. Platforms with no bundled native (e.g. Android): `System.loadLibrary("audx_jni")`,
+   which honors `-Djava.library.path` and Android's `jniLibs/<abi>/`.
 
 ### Android apps (JVM/ART)
 
@@ -53,7 +56,7 @@ The contract between `src/jvmMain/kotlin/Audx.kt` and `audx-realtime/src/audx_jn
 | Kotlin (`dev.rizukirr.audx.Audx`) | C export |
 |---|---|
 | `nativeCreate(sampleRate, resampleQuality): Long` | `Java_dev_rizukirr_audx_Audx_nativeCreate` |
-| `nativeFrameSize(sampleRate): Int` | `Java_dev_rizukirr_audx_Audx_nativeFrameSize` |
+| `nativeFrameSize(ptr): Int` | `Java_dev_rizukirr_audx_Audx_nativeFrameSize` |
 | `nativeProcess(ptr, input, output): Float` | `Java_dev_rizukirr_audx_Audx_nativeProcess` |
 | `nativeDestroy(ptr)` | `Java_dev_rizukirr_audx_Audx_nativeDestroy` |
 

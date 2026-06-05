@@ -45,6 +45,13 @@ class AudxJvmTest {
     }
 
     @Test
+    fun constructorRejectsInvalidArguments() {
+        assertFailsWith<IllegalArgumentException> { Audx(sampleRate = 0) }
+        assertFailsWith<IllegalArgumentException> { Audx(sampleRate = -16000) }
+        assertFailsWith<IllegalArgumentException> { Audx(resampleQuality = QUALITY_MAX + 1) }
+    }
+
+    @Test
     fun frameSizeMatchesSampleRate() {
         Audx(sampleRate = 48000).use { a48 ->
             Audx(sampleRate = 16000).use { a16 ->
