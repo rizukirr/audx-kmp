@@ -169,7 +169,7 @@ git commit -m "feat(samples): scaffold server sample project"
 - Test: `samples/server/src/test/kotlin/dev/rizukirr/audx/samples/server/WavTest.kt`
 - Create: `samples/server/src/main/kotlin/dev/rizukirr/audx/samples/server/Wav.kt`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `samples/server/src/test/kotlin/dev/rizukirr/audx/samples/server/WavTest.kt`:
 
@@ -218,12 +218,12 @@ class WavTest {
 }
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd samples/server && ./gradlew test --tests "dev.rizukirr.audx.samples.server.WavTest"`
 Expected: FAILED — compilation error (unresolved references `parseWav`, `wavBytes`, `writeWav`, `WavFormatException`).
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 Create `samples/server/src/main/kotlin/dev/rizukirr/audx/samples/server/Wav.kt`:
 
@@ -312,12 +312,12 @@ fun writeWav(file: File, sampleRate: Int, samples: ShortArray) {
 }
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `cd samples/server && ./gradlew test --tests "dev.rizukirr.audx.samples.server.WavTest"`
 Expected: `BUILD SUCCESSFUL`, all 4 tests pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add samples/server/src
