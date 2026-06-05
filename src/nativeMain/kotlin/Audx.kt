@@ -27,6 +27,10 @@ actual class Audx actual constructor(
 
     actual val frameSize: Int = audx_calculate_frame_sample(sampleRate.toUInt()).toInt()
 
+    internal actual val vadRing: VadRing = VadRing()
+
+    actual val lastVad: Float get() = vadRing.last
+
     // 0 = open, 1 = closed; compareAndSet makes close() destroy-once under races.
     private val closed = AtomicInt(0)
 
@@ -39,7 +43,9 @@ actual class Audx actual constructor(
                 audx_process_int(state, pinnedIn.addressOf(0), pinnedOut.addressOf(0))
             }
         }
-        return checkVadResult(vad)
+        val checked = checkVadResult(vad)
+        vadRing.push(checked)
+        return checked
     }
 
     actual fun isClosed(): Boolean = closed.value != 0

@@ -52,6 +52,26 @@ class AudxJvmTest {
     }
 
     @Test
+    fun vadStateBeforeAndAfterProcessing() {
+        Audx(sampleRate = 16000).use { audx ->
+            assertEquals(0f, audx.lastVad)
+            assertFalse(audx.isSpeaking())
+
+            val input = ShortArray(audx.frameSize) {
+                Random.nextInt(-3000, 3000).toShort()
+            }
+            val output = ShortArray(audx.frameSize)
+            val vad = audx.process(input, output)
+
+            assertEquals(vad, audx.lastVad)
+            // vad is always >= 0 (negatives throw), so -1f must register as speech
+            assertTrue(audx.isSpeaking(threshold = -1f))
+            // probabilities never exceed 1, and the comparison is strict
+            assertFalse(audx.isSpeaking(threshold = 1f))
+        }
+    }
+
+    @Test
     fun frameSizeMatchesSampleRate() {
         Audx(sampleRate = FRAME_RATE).use { a48 ->
             Audx(sampleRate = 16000).use { a16 ->

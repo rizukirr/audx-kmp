@@ -18,6 +18,10 @@ actual class Audx actual constructor(
     /** Guards handle lifecycle: process()/close() racing would use-after-free the C state. */
     private val lock = Any()
 
+    internal actual val vadRing: VadRing = VadRing()
+
+    actual val lastVad: Float get() = vadRing.last
+
     private val handle: Long = nativeCreate(sampleRate, resampleQuality)
         .takeIf { it != 0L }
         ?: error("audx_create returned NULL (rate=$sampleRate, quality=$resampleQuality)")
@@ -30,7 +34,9 @@ actual class Audx actual constructor(
         validateFrame(frameSize, input, output)
         synchronized(lock) {
             check(!closed) { "Audx is closed" }
-            return checkVadResult(nativeProcess(handle, input, output))
+            val vad = checkVadResult(nativeProcess(handle, input, output))
+            vadRing.push(vad)
+            return vad
         }
     }
 
