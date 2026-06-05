@@ -7,20 +7,28 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.Box
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -68,6 +76,28 @@ fun MainScreen(vm: MainViewModel = viewModel()) {
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(if (recording) "Stop" else "Record")
+        }
+
+        if (recording) {
+            LinearProgressIndicator(
+                progress = { vm.vadProbability },
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text("Speaking (VAD %.2f)".format(vm.vadProbability))
+                Box(
+                    Modifier
+                        .size(16.dp)
+                        .background(
+                            color = if (vm.speaking) Color(0xFF2E7D32) else Color(0xFFBDBDBD),
+                            shape = CircleShape,
+                        )
+                )
+            }
         }
 
         val ready = vm.state is UiState.Ready

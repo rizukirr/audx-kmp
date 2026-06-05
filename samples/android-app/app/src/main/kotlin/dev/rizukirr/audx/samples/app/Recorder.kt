@@ -16,9 +16,12 @@ class Recorder {
      * Captures 16 kHz mono PCM-16 until [stop] is called, then returns every
      * sample read. Call on a background dispatcher. Throws
      * IllegalStateException if the mic cannot be opened.
+     *
+     * [onChunk] is invoked on the recording thread with each chunk as it is
+     * read (chunks are not frame-aligned) — used for live VAD monitoring.
      */
     @SuppressLint("MissingPermission") // caller ensures RECORD_AUDIO is granted
-    fun record(): ShortArray {
+    fun record(onChunk: ((ShortArray) -> Unit)? = null): ShortArray {
         val minBuf = AudioRecord.getMinBufferSize(
             SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT
         )
@@ -38,7 +41,11 @@ class Recorder {
             val chunk = ShortArray(1024)
             while (recording) {
                 val n = audioRecord.read(chunk, 0, chunk.size)
-                if (n > 0) chunks.add(chunk.copyOf(n))
+                if (n > 0) {
+                    val c = chunk.copyOf(n)
+                    chunks.add(c)
+                    onChunk?.invoke(c)
+                }
             }
             audioRecord.stop()
         } finally {
