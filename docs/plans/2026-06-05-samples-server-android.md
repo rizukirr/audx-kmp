@@ -425,7 +425,7 @@ git commit -m "feat(samples): server offline denoise pass over audx"
 - Create: `samples/server/src/main/kotlin/dev/rizukirr/audx/samples/server/Application.kt`
 - Create: `samples/server/src/main/resources/logback.xml`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `samples/server/src/test/kotlin/dev/rizukirr/audx/samples/server/ApplicationTest.kt`:
 
@@ -478,12 +478,12 @@ class ApplicationTest {
 }
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd samples/server && ./gradlew test --tests "dev.rizukirr.audx.samples.server.ApplicationTest"`
 Expected: FAILED — compilation error (unresolved reference `module`).
 
-- [ ] **Step 3: Write the application module**
+- [x] **Step 3: Write the application module**
 
 Create `samples/server/src/main/kotlin/dev/rizukirr/audx/samples/server/Application.kt`:
 
@@ -547,7 +547,7 @@ fun Application.module(recordingsDir: File = File("recordings")) {
 
 Note: the endpoint accepts any mono PCM-16 sample rate (per the spec's `parseWav` contract — audx resamples internally), not just 16 kHz.
 
-- [ ] **Step 4: Write logback.xml**
+- [x] **Step 4: Write logback.xml**
 
 Create `samples/server/src/main/resources/logback.xml`:
 
@@ -564,12 +564,12 @@ Create `samples/server/src/main/resources/logback.xml`:
 </configuration>
 ```
 
-- [ ] **Step 5: Run the full server test suite**
+- [x] **Step 5: Run the full server test suite**
 
 Run: `cd samples/server && ./gradlew test`
 Expected: `BUILD SUCCESSFUL` — WavTest (4), DenoiserTest (2), ApplicationTest (3) all pass.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add samples/server/src
