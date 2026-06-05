@@ -409,7 +409,7 @@ git commit -m "feat: add lastVad and debounced isSpeaking(threshold, hangoverMs)
 **Files:**
 - Modify: `README.md`
 
-- [ ] **Step 1: Document the VAD API**
+- [x] **Step 1: Document the VAD API**
 
 In `README.md`, insert this section between the `## Usage` section's code block and `## Verify`:
 
@@ -431,12 +431,12 @@ audio exceeded the threshold — onset is instant, release waits out short dips
 (breaths, gaps between words), so the state doesn't flicker mid-sentence.
 ````
 
-- [ ] **Step 2: Republish to mavenLocal**
+- [x] **Step 2: Republish to mavenLocal**
 
 Run: `./gradlew publishToMavenLocal`
 Expected: `BUILD SUCCESSFUL` (the sample module consumes this snapshot).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add README.md
