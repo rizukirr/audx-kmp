@@ -1,0 +1,100 @@
+package dev.rizukirr.audx.samples.app
+
+import android.app.Application
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import java.io.File
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+sealed interface UiState {
+    data object Idle : UiState
+    data object Recording : UiState
+    data object Processing : UiState
+    data class Ready(val rawFile: File, val denoisedFile: File) : UiState
+}
+
+class MainViewModel(app: Application) : AndroidViewModel(app) {
+    var state by mutableStateOf<UiState>(UiState.Idle)
+        private set
+    var status by mutableStateOf("Tap Record to start")
+        private set
+    var serverUrl by mutableStateOf("http://192.168.1.100:8080")
+
+    private val recorder = Recorder()
+    private val player = Player()
+
+    private fun outputDir(): File =
+        checkNotNull(getApplication<Application>().getExternalFilesDir(null)) {
+            "external storage unavailable"
+        }
+
+    fun startRecording() {
+        if (state == UiState.Recording) return
+        state = UiState.Recording
+        status = "Recording…"
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val samples = recorder.record()
+                withContext(Dispatchers.Main) {
+                    state = UiState.Processing
+                    status = "Denoising…"
+                }
+                val rawFile = File(outputDir(), "raw.wav")
+                writeWav(rawFile, SAMPLE_RATE, samples)
+                val denoisedFile = File(outputDir(), "denoised.wav")
+                writeWav(denoisedFile, SAMPLE_RATE, denoise(SAMPLE_RATE, samples))
+                withContext(Dispatchers.Main) {
+                    state = UiState.Ready(rawFile, denoisedFile)
+                    status = "Ready — %.1f s recorded".format(samples.size / SAMPLE_RATE.toFloat())
+                }
+            } catch (t: Throwable) { // Throwable: UnsatisfiedLinkError = missing jniLibs
+                withContext(Dispatchers.Main) {
+                    state = UiState.Idle
+                    status = "Error: ${t.message ?: t.javaClass.simpleName}"
+                }
+            }
+        }
+    }
+
+    fun stopRecording() = recorder.stop()
+
+    fun permissionDenied() {
+        status = "Microphone permission denied"
+    }
+
+    fun playRaw() {
+        (state as? UiState.Ready)?.let { play(it.rawFile) }
+    }
+
+    fun playDenoised() {
+        (state as? UiState.Ready)?.let { play(it.denoisedFile) }
+    }
+
+    private fun play(file: File) {
+        status = try {
+            player.play(file)
+            "Playing ${file.name}"
+        } catch (t: Throwable) {
+            "Playback failed: ${t.message}"
+        }
+    }
+
+    fun uploadRaw() {
+        val ready = state as? UiState.Ready ?: return
+        viewModelScope.launch {
+            status = "Uploading…"
+            status = try {
+                "Server: ${upload(serverUrl, ready.rawFile)}"
+            } catch (t: Throwable) {
+                "Upload failed: ${t.message ?: t.javaClass.simpleName}"
+            }
+        }
+    }
+
+    override fun onCleared() = player.stop()
+}
