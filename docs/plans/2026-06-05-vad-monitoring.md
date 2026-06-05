@@ -225,7 +225,7 @@ git commit -m "feat: add VadRing — windowed history of per-frame VAD probabili
 - Modify: `src/nativeMain/kotlin/Audx.kt`
 - Test: `src/jvmTest/kotlin/AudxJvmTest.kt`
 
-- [ ] **Step 1: Write the failing integration test**
+- [x] **Step 1: Write the failing integration test**
 
 In `src/jvmTest/kotlin/AudxJvmTest.kt`, add this test method inside the `AudxJvmTest` class (after `constructorRejectsInvalidArguments`):
 
@@ -251,12 +251,12 @@ In `src/jvmTest/kotlin/AudxJvmTest.kt`, add this test method inside the `AudxJvm
     }
 ```
 
-- [ ] **Step 2: Run to confirm failure**
+- [x] **Step 2: Run to confirm failure**
 
 Run: `./gradlew jvmTest --tests "dev.rizukirr.audx.AudxJvmTest"`
 Expected: FAIL — compilation error, unresolved references `lastVad` / `isSpeaking`.
 
-- [ ] **Step 3: Extend the common contract**
+- [x] **Step 3: Extend the common contract**
 
 Replace the full contents of `src/commonMain/kotlin/Audx.kt` with:
 
@@ -332,7 +332,7 @@ internal fun checkVadResult(vad: Float): Float {
 }
 ```
 
-- [ ] **Step 4: Wire the JVM actual**
+- [x] **Step 4: Wire the JVM actual**
 
 In `src/jvmMain/kotlin/Audx.kt`, make these three edits:
 
@@ -360,7 +360,7 @@ In `src/jvmMain/kotlin/Audx.kt`, make these three edits:
 
 (c) No other changes to this file.
 
-- [ ] **Step 5: Wire the native actual**
+- [x] **Step 5: Wire the native actual**
 
 In `src/nativeMain/kotlin/Audx.kt`, make these two edits:
 
@@ -390,12 +390,12 @@ In `src/nativeMain/kotlin/Audx.kt`, make these two edits:
     }
 ```
 
-- [ ] **Step 6: Run the full verification matrix**
+- [x] **Step 6: Run the full verification matrix**
 
 Run: `./gradlew jvmTest compileKotlinLinuxX64 compileKotlinMingwX64 compileKotlinAndroidNativeArm64 compileKotlinAndroidNativeX64`
 Expected: `BUILD SUCCESSFUL`; jvmTest runs 12 tests (6 VadRingTest + 6 AudxJvmTest including the new one), all passing.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/commonMain/kotlin/Audx.kt src/jvmMain/kotlin/Audx.kt src/nativeMain/kotlin/Audx.kt src/jvmTest/kotlin/AudxJvmTest.kt
