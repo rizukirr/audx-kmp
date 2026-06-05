@@ -649,7 +649,7 @@ git commit -m "feat: add :sample-android module skeleton (AGP 9.2, Compose)"
 - Create: `sample-android/src/main/jniLibs/arm64-v8a/libaudx_jni.so`
 - Create: `sample-android/src/main/jniLibs/x86_64/libaudx_jni.so`
 
-- [ ] **Step 1: Copy the shims from audx-realtime**
+- [x] **Step 1: Copy the shims from audx-realtime**
 
 ```bash
 mkdir -p sample-android/src/main/jniLibs/arm64-v8a sample-android/src/main/jniLibs/x86_64
@@ -657,12 +657,12 @@ cp /home/rizki/Projects/audx-realtime/libs/arm64-v8a/libaudx_jni.so sample-andro
 cp /home/rizki/Projects/audx-realtime/libs/x86_64/libaudx_jni.so sample-android/src/main/jniLibs/x86_64/
 ```
 
-- [ ] **Step 2: Confirm the shims export the full JNI surface**
+- [x] **Step 2: Confirm the shims export the full JNI surface**
 
 Run: `nm -D sample-android/src/main/jniLibs/x86_64/libaudx_jni.so | grep Java_`
 Expected: four symbols — `nativeCreate`, `nativeDestroy`, `nativeFrameSize`, `nativeProcess`.
 
-- [ ] **Step 3: Rebuild and inspect the APK**
+- [x] **Step 3: Rebuild and inspect the APK**
 
 ```bash
 ./gradlew :sample-android:assembleDebug
@@ -671,7 +671,7 @@ unzip -l sample-android/build/outputs/apk/debug/sample-android-debug.apk | grep 
 
 Expected: two lines, `lib/arm64-v8a/libaudx_jni.so` and `lib/x86_64/libaudx_jni.so`.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add sample-android/src/main/jniLibs/
