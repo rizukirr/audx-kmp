@@ -856,7 +856,7 @@ git commit -m "feat(samples): scaffold Android sample app"
 - Create: `samples/android-app/app/src/main/jniLibs/arm64-v8a/libaudx_jni.so` (copy)
 - Create: `samples/android-app/app/src/main/jniLibs/x86_64/libaudx_jni.so` (copy)
 
-- [ ] **Step 1: Copy the per-ABI shims from audx-realtime**
+- [x] **Step 1: Copy the per-ABI shims from audx-realtime**
 
 ```bash
 mkdir -p samples/android-app/app/src/main/jniLibs/arm64-v8a
@@ -867,7 +867,7 @@ cp /home/rizki/Projects/audx-realtime/libs/x86_64/libaudx_jni.so samples/android
 
 (Only `libaudx_jni.so` is needed — verified self-contained: its `NEEDED` entries are only `libm`/`libdl`/`libc`. `libaudx_src.so` is not used.)
 
-- [ ] **Step 2: Rebuild and inspect the APK**
+- [x] **Step 2: Rebuild and inspect the APK**
 
 ```bash
 cd samples/android-app
@@ -877,12 +877,12 @@ unzip -l app/build/outputs/apk/debug/app-debug.apk | grep libaudx_jni.so
 
 Expected: two lines — `lib/arm64-v8a/libaudx_jni.so` and `lib/x86_64/libaudx_jni.so`.
 
-- [ ] **Step 3: Confirm the desktop natives were excluded**
+- [x] **Step 3: Confirm the desktop natives were excluded**
 
 Run: `unzip -l app/build/outputs/apk/debug/app-debug.apk | grep natives/ || echo EXCLUDED`
 Expected: `EXCLUDED` (no `natives/...` java-resource entries from the jvm jar).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add samples/android-app/app/src/main/jniLibs
