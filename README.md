@@ -1,25 +1,81 @@
 # audx-kmp
 
-Kotlin Multiplatform wrapper for [audx-realtime](../audx-realtime) — real-time audio denoising + VAD.
+Kotlin Multiplatform wrapper for [audx-realtime](../audx-realtime) — real-time audio denoising + voice activity detection (VAD).
 
-One common API (`dev.rizukirr.audx.Audx`), five targets, two bridging mechanisms:
+## Supported platforms
 
-| Target | Bridge | Native artifact | Bound at |
+| Platform | Gradle target | Bridge | Status |
 |---|---|---|---|
-| `linuxX64` | cinterop | `native/libs/linux_x64/libaudx.a` | link time |
-| `androidNativeArm64` | cinterop | `native/libs/android_arm64/libaudx.a` | link time |
-| `androidNativeX64` | cinterop | `native/libs/android_x64/libaudx.a` | link time |
-| `mingwX64` | cinterop | `native/libs/mingw_x64/libaudx.a` | link time |
-| `jvm` | JNI | `libaudx_jni.so` / `.dll` / `.dylib` | runtime |
+| Linux x64 (native binaries) | `linuxX64` | cinterop, link time | ✅ tested |
+| Linux x64 (JVM / servers) | `jvm` | JNI, bundled `.so` | ✅ tested (zero-config) |
+| Android apps (ART) | `jvm` + app-supplied `jniLibs/` | JNI | ✅ tested on device (arm64-v8a) and emulator (x86_64) |
+| Android (Kotlin/Native) | `androidNativeArm64` / `androidNativeX64` | cinterop | ⚠️ compiles, never executed |
+| Windows x64 (native) | `mingwX64` | cinterop | ⚠️ compiles, never executed on Windows |
+| Windows / macOS (JVM) | `jvm` | JNI | ❌ no `audx_jni.dll` / `.dylib` bundled yet |
+| macOS / iOS (native) | — | — | ❌ no targets (needs a macOS build host) |
+| JS / wasm | — | — | ❌ out of scope |
 
-## Artifact flow
+## Getting started
 
-All C code lives in `audx-realtime`; this repo only vendors prebuilt artifacts:
+Published to mavenLocal as `dev.rizukirr:audx-kmp:0.1.0-SNAPSHOT` (run `./gradlew publishToMavenLocal`):
 
-- **Static libs** (`libaudx.a` per target) → `native/libs/<target>/`, consumed by cinterop (`src/nativeInterop/cinterop/audx.def`).
-- **JNI shim** (`libaudx_jni.so`) → `src/jvmMain/resources/natives/<os>-<arch>/`, bundled into the jvm jar.
+```kotlin
+repositories { mavenLocal() }
+dependencies { implementation("dev.rizukirr:audx-kmp:0.1.0-SNAPSHOT") }
+```
 
-To refresh the desktop JNI shim after changing `audx-realtime`:
+One `Audx` instance per stream: create once, `process()` one 10ms frame per tick, `close()` when the stream ends.
+
+```kotlin
+Audx(sampleRate = 16000).use { audx ->
+    val output = ShortArray(audx.frameSize)   // 160 samples at 16 kHz
+    audioChunks.collect { input ->
+        val vad = audx.process(input, output) // output = denoised frame
+        if (audx.isSpeaking()) send(output)   // debounced VAD gate
+    }
+}
+```
+
+### Voice activity detection
+
+```kotlin
+audx.lastVad                    // raw probability 0..1 of the newest frame (UI meters)
+audx.isSpeaking()               // debounced: threshold 0.5, 200ms hangover
+audx.isSpeaking(0.7f, 400)      // stricter threshold, longer hold
+audx.isSpeaking(hangoverMs = 0) // raw last-frame comparison, no debounce
+```
+
+`isSpeaking` is true if any frame within the last `hangoverMs` of processed audio
+exceeded the threshold — onset is instant, release waits out breaths and
+inter-word gaps, so the state doesn't flicker mid-sentence.
+
+### Android
+
+The jar bundles only desktop natives; apps supply the per-ABI shims
+(built by `audx-realtime/scripts/android.sh` into `libs/<abi>/`):
+
+```
+app/src/main/jniLibs/arm64-v8a/libaudx_jni.so
+app/src/main/jniLibs/x86_64/libaudx_jni.so
+```
+
+## Samples
+
+- [`samples/android-app/`](samples/android-app/) — record → denoise → play/upload,
+  with live VAD meter + debounced speaking indicator. Device-verified.
+- [`samples/server/`](samples/server/) — JVM server consuming the same artifact.
+- [`sample-android/`](sample-android/) — minimal VAD-only demo module
+  (`./gradlew :sample-android:assembleDebug`).
+
+## Maintainers
+
+All C code lives in `audx-realtime`; this repo vendors prebuilt artifacts:
+
+- `native/libs/<target>/libaudx.a` → cinterop (link time)
+- `src/jvmMain/resources/natives/<os>-<arch>/` → bundled into the jvm jar; extracted
+  once to `~/.cache/audx-kmp/` (content-hash keyed) and reused across JVM starts
+
+Refresh the desktop shim after C changes:
 
 ```bash
 cd ../audx-realtime
@@ -29,85 +85,14 @@ cp build/linux-x64/lib/libaudx_jni.so ../audx-kmp/src/jvmMain/resources/natives/
 strip ../audx-kmp/src/jvmMain/resources/natives/linux-x64/libaudx_jni.so
 ```
 
-## JVM runtime loading
-
-`Audx` (jvm) resolves the native library in order:
-
-1. The bundled resource `natives/<os>-<arch>/`, extracted once to a per-user
-   cache (`~/.cache/audx-kmp/audx_jni-<hash>.so`, keyed by content hash) and
-   reused across JVM starts. Preferred because it is built in lockstep with the
-   Kotlin facade — a stale shim on `java.library.path` can never shadow it.
-2. Platforms with no bundled native (e.g. Android): `System.loadLibrary("audx_jni")`,
-   which honors `-Djava.library.path` and Android's `jniLibs/<abi>/`.
-
-### Android apps (JVM/ART)
-
-The jar bundles only desktop natives. Android consumers add the per-ABI shims
-(built by `audx-realtime/scripts/android.sh` into `libs/<abi>/`) to their app:
-
-```
-app/src/main/jniLibs/arm64-v8a/libaudx_jni.so
-app/src/main/jniLibs/x86_64/libaudx_jni.so
-```
-
-A working example lives in this repo: [`sample-android/`](sample-android/) records
-from the microphone and shows `lastVad` plus the raw vs debounced `isSpeaking()`
-indicators side by side. Its `src/main/jniLibs/<abi>/` shims are committed copies
-of `audx-realtime/libs/<abi>/libaudx_jni.so` — refresh them the same way after
-rebuilding (`./scripts/android.sh release` in audx-realtime, then re-copy).
-
-```bash
-./gradlew :sample-android:assembleDebug   # build the demo APK
-```
-
-### JNI surface
-
-The contract between `src/jvmMain/kotlin/Audx.kt` and `audx-realtime/src/audx_jni.c`:
-
-| Kotlin (`dev.rizukirr.audx.Audx`) | C export |
-|---|---|
-| `nativeCreate(sampleRate, resampleQuality): Long` | `Java_dev_rizukirr_audx_Audx_nativeCreate` |
-| `nativeFrameSize(ptr): Int` | `Java_dev_rizukirr_audx_Audx_nativeFrameSize` |
-| `nativeProcess(ptr, input, output): Float` | `Java_dev_rizukirr_audx_Audx_nativeProcess` |
-| `nativeDestroy(ptr)` | `Java_dev_rizukirr_audx_Audx_nativeDestroy` |
-
-Renaming the Kotlin package/class or the method names breaks symbol resolution
-(`UnsatisfiedLinkError`) — change both sides together.
-
-## Usage
-
-One `Audx` instance per stream: create once, `process()` one frame per tick,
-`close()` once when the stream ends.
-
-```kotlin
-Audx(sampleRate = 16000).use { audx ->
-    val output = ShortArray(audx.frameSize)
-    audioChunks.collect { input ->         // e.g. 160-sample chunks at 16 kHz
-        val vad = audx.process(input, output)
-        // output now holds the denoised frame; vad is speech probability 0..1
-    }
-}
-```
-
-### Voice activity detection
-
-Every `process()` call returns the frame's speech probability and records it.
-Two accessors expose it:
-
-```kotlin
-audx.lastVad                  // raw probability of the newest frame (UI meters)
-audx.isSpeaking()             // debounced: threshold 0.5, 200ms hangover
-audx.isSpeaking(0.7f, 400)    // stricter threshold, longer hold
-audx.isSpeaking(hangoverMs = 0) // raw last-frame comparison, no debounce
-```
-
-`isSpeaking` is true if any frame within the last `hangoverMs` of processed
-audio exceeded the threshold — onset is instant, release waits out short dips
-(breaths, gaps between words), so the state doesn't flicker mid-sentence.
+JNI name contract (`src/jvmMain/kotlin/Audx.kt` ↔ `audx-realtime/src/audx_jni.c`):
+the four `@JvmStatic external` methods bind to `Java_dev_rizukirr_audx_Audx_native{Create,FrameSize,Process,Destroy}`.
+Renaming the Kotlin package/class or methods breaks resolution at runtime — change both sides together.
 
 ## Verify
 
 ```bash
-./gradlew jvmTest                      # JNI smoke tests (desktop)
+./gradlew jvmTest                      # JNI smoke + VAD unit tests (12)
 ./gradlew runDebugExecutableLinuxX64   # native sanity run
+./gradlew :sample-android:assembleDebug
 ```
