@@ -1175,7 +1175,7 @@ git commit -m "feat(samples): app WAV playback and raw-audio upload"
 **Files:**
 - Create: `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/MainViewModel.kt`
 
-- [ ] **Step 1: Write the implementation**
+- [x] **Step 1: Write the implementation**
 
 Create `samples/android-app/app/src/main/kotlin/dev/rizukirr/audx/samples/app/MainViewModel.kt`:
 
@@ -1282,12 +1282,12 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 }
 ```
 
-- [ ] **Step 2: Verify it compiles**
+- [x] **Step 2: Verify it compiles**
 
 Run: `cd samples/android-app && ./gradlew :app:assembleDebug`
 Expected: `BUILD SUCCESSFUL`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add samples/android-app/app/src
