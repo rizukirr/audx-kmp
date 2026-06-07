@@ -12,6 +12,8 @@ One common API (`dev.rizukirr.audx.Audx`), five targets, two bridging mechanisms
 | `mingwX64` | cinterop | `native/libs/mingw_x64/libaudx.a` | link time |
 | `jvm` | JNI | `libaudx_jni.so` / `.dll` / `.dylib` | runtime |
 
+> WARNING: This project is not ready for production yet
+
 ## Artifact flow
 
 All C code lives in `audx-realtime`; this repo only vendors prebuilt artifacts:
