@@ -1,6 +1,6 @@
 # audx-kmp
 
-Kotlin Multiplatform wrapper for [audx-realtime](../audx-realtime) — real-time audio denoising + VAD.
+Kotlin Multiplatform wrapper for [audx-realtime](https://github.com/rizukirr/audx-realtime) — real-time audio denoising + VAD.
 
 One common API (`dev.rizukirr.audx.Audx`), five targets, two bridging mechanisms:
 
