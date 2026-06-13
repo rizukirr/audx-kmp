@@ -1,6 +1,6 @@
 # audx-kmp
 
-Kotlin Multiplatform wrapper for [audx-realtime](../audx-realtime) — real-time audio denoising + voice activity detection (VAD).
+Kotlin Multiplatform wrapper for [audx-realtime](https://github.com/rizukirr/audx-realtime) — real-time audio denoising + VAD.
 
 ## Supported platforms
 
@@ -15,7 +15,9 @@ Kotlin Multiplatform wrapper for [audx-realtime](../audx-realtime) — real-time
 | macOS / iOS (native) | — | — | ❌ no targets (needs a macOS build host) |
 | JS / wasm | — | — | ❌ out of scope |
 
-## Getting started
+> WARNING: This project is not ready for production yet
+
+## Artifact flow
 
 Published to mavenLocal as `dev.rizukirr:audx-kmp:0.1.0-SNAPSHOT` (run `./gradlew publishToMavenLocal`):
 
